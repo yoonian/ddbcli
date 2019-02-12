@@ -42,21 +42,6 @@ ddbcli # show prompt
 
 ![ddbcli demo](https://raw.githubusercontent.com/winebarrel/ddbcli/master/etc/ddbcli-demo.gif)
 
-## GROUP BY (Aggregate)
-
-```
-ap-northeast-1> select all gender from employees
-             -> where birth_date begins_with '1960'
-             -> | group_by(:gender) {|i| puts "DEBUG: 'i' contains: #{i[0, 3].inspect} ..."\; i.length };
-DEBUG: 'i' contains: [{"gender"=>"M"}, {"gender"=>"M"}, {"gender"=>"M"}] ...
-DEBUG: 'i' contains: [{"gender"=>"F"}, {"gender"=>"F"}, {"gender"=>"F"}] ...
-{
-  "M": 546,
-  "F": 355
-}
-// 2 rows in set (0.20 sec)
-```
-
 ## Use Global Secondary Indexes
 
 * [https://gist.github.com/winebarrel/7938971](https://gist.github.com/winebarrel/7938971)
@@ -202,7 +187,7 @@ Scan (SELECT ALL), QueryFilter (HAVING)
 Ryby
   query | ruby_script
 
-  ex) SELECT ALL * FROM employees WHERE gender = 'M' | birth_date.map {|i| Time.parse(i) };
+  ex) SELECT ALL * FROM employees WHERE gender = 'M' | map {|i| Time.parse(i["birth_date"]) };
       [
         "1957-09-16 00:00:00 +0900",
         "1954-12-16 00:00:00 +0900",
@@ -245,7 +230,7 @@ Append
 # Test
 
 ```sh
-# http://dynamodb-preview.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest_preview.tar.gz
+# see https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html
 java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar &
 bundle install
 bundle exec rake
